@@ -1,19 +1,14 @@
 
-from functions.get_file_content import get_file_content
-
+from config import SEPARATOR
+from functions.run_python import run_python_file
 def test():
-    print("main.py TEST:")
-    print(get_file_content("calculator", "main.py"))
 
-    print("\npkg/calculator.py TEST\n")
-    print(get_file_content("calculator", "pkg/calculator.py"))
+    print_separator = lambda func: print(func, f"\n{SEPARATOR}")
 
-    print("\n/bin/cat TEST\n")
-    print(get_file_content("calculator", "/bin/cat"))
-
-    print("\npkg/does_not_exist,py TEST\n")
-    print(get_file_content("calculator", "pkg/does_not_exist.py"))
-
-    print(get_file_content("calculator", "lorem.txt"))
+    print_separator(run_python_file("calculator", "main.py") )
+    print_separator(run_python_file("calculator", "main.py", ["3 + 5"]))
+    print_separator(run_python_file("calculator", "tests.py"))
+    print_separator(run_python_file("calculator", "../main.py"))
+    print_separator(run_python_file("calculator", "nonexistent.py")) 
 if __name__ == "__main__":
     test()

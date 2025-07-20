@@ -1,10 +1,8 @@
+from config import SEPARATOR, MODEL
 from flags import check_args
 
 def generate_content(client, messages, prompt, args):
     flags = check_args(args)
-
-    MODEL = "gemini-2.0-flash-001"
-    SEPARATOR = "=" * 30
 
     print_separator = lambda func: print(func, f"\n{SEPARATOR}")
 
