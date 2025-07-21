@@ -1,8 +1,32 @@
 import os
 import subprocess
+from google.genai import types
 from pathlib import PurePath
 
 from config import TIMEOUT_SECONDS, RUN_CMD
+
+schema_run_python_file = types.FunctionDeclaration(
+    name = "run_python_file",
+    description = f"Runs/executes a python (.py) file with a timeout of {TIMEOUT_SECONDS} seconds, constrained to the working directory.",
+    parameters = types.Schema(
+        type = types.Type.OBJECT,
+        properties = {
+            "file_path": types.Schema(
+                type = types.Type.STRING,
+                description = "The path of the file to be run, relative to the working directory.",
+            ),
+            "args": types.Schema(
+                type = types.Type.ARRAY,
+                items = types.Schema(
+                    type = types.Type.STRING,
+                    description = "Optional argument to be provided"
+                ),
+                description = "List of arguments that can be input when trying to execute the file (e.g. python main.py [args...]). This parameter is optional"
+            ),
+        },
+        required = ["file_path"]
+    ),
+)
 
 def run_python_file(working_directory, file_path, args = []):
     target_dir = os.path.abspath(os.path.join(working_directory, file_path))

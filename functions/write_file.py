@@ -1,5 +1,25 @@
 import os
+from google.genai import types
 from pathlib import PurePath
+
+schema_write_file = types.FunctionDeclaration(
+    name = "write_file",
+    description = "Writes/overwrites/creates a file given a content, constrained to the working directory.",
+    parameters = types.Schema(
+        type = types.Type.OBJECT,
+        properties = {
+            "file_path": types.Schema(
+                type = types.Type.STRING,
+                description = "The path of the file to be written, relative to the working directory.",
+            ),
+            "content": types.Schema(
+                type = types.Type.STRING,
+                description = "The content to be written into the file."
+            ),
+        },
+        required = ["file_path", "content"] 
+    ),
+)
 
 def write_file(working_directory, file_path, content):
     target_dir = os.path.abspath(os.path.join(working_directory, file_path))
