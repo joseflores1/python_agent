@@ -1,13 +1,11 @@
 from google.genai import types
 
-from config import SEPARATOR, MODEL, SYSTEM_PROMPT
+from config import MODEL, SYSTEM_PROMPT, print_separator
 from flags import check_args
-from call_function import available_functions
+from call_function import available_functions, call_function
 
 def generate_content(client, messages, prompt, args):
     flags = check_args(args)
-
-    print_separator = lambda func: print(func, f"\n{SEPARATOR}")
 
     response = client.models.generate_content(
         model = MODEL,
@@ -15,7 +13,9 @@ def generate_content(client, messages, prompt, args):
         config = types.GenerateContentConfig(system_instruction = SYSTEM_PROMPT, tools = [available_functions])
     )
     
-    if flags["--verbose"][1]:
+    verbose_set = flags["--verbose"][1]
+
+    if verbose_set:
         print_separator(f"User prompt: {prompt}")
         prompt_token_count = response.usage_metadata.prompt_token_count
         response_token_count = response.usage_metadata.candidates_token_count
@@ -26,7 +26,20 @@ def generate_content(client, messages, prompt, args):
 
     if function_calls:
         for function_call in function_calls:
-            print_separator(f"Calling function: {function_call.name}({function_call.args})")
+            function_call_result = call_function(function_call, verbose = verbose_set)
 
+            if (
+                not function_call_result.parts
+                or
+                not function_call_result.parts[0]
+                or 
+                not function_call_result.parts[0].function_response
+            ):
+                raise Exception("empty function call result")
+
+            specific_result = function_call_result.parts[0].function_response.response
+ 
+            if verbose_set:
+                print_separator(f"{specific_result["result"]}")
     else:
         return response.text
