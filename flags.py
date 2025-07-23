@@ -1,6 +1,6 @@
 import sys
 
-def check_args(args: list):
+def check_args(args: list[str]):
     ## Dict with predefined args, first element of the key contains possible args to save, second one allows to check if the flag was input,
     # third one tells how many args it expects (let's not deal with possible "infinite args", we would establish a maximum, I think)
     defined_flags = {

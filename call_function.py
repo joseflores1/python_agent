@@ -41,7 +41,8 @@ def call_function(function_call_part: types.FunctionCall, verbose = False):
     else:
         print_separator(f"- Calling function: {function_name}")
 
-    function_args["working_directory"] = CWD
+    cwd_dict = {"working_directory": CWD}
+    function_args.update(cwd_dict)
     function_to_run = FUNCTION_DICT[function_name]
 
     function_result = function_to_run(**function_args) 
